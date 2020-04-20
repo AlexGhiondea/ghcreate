@@ -33,6 +33,7 @@ namespace Creator.Models.Objects
             var milestone = new NewMilestone(Title)
             {
                 Description = Description,
+                DueOn = DueOn
             };
 
             if (string.IsNullOrEmpty(DueOn?.ToString()))
