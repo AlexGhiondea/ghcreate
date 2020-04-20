@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "creator": {
+      "commandName": "Project",
+      "commandLineArgs": "Create \"C:\\code\\creator\\objects.csv\" alexghiondea\\il -token 958a6a729a3457514641b95cf41bdd60878f7fc4 "
+    }
+  }
+}
