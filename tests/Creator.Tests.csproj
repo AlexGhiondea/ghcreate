@@ -17,7 +17,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Creator.csproj" />
+    <ProjectReference Include="..\src\Creator.csproj" />
   </ItemGroup>
-
 </Project>
