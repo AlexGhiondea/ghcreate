@@ -1,4 +1,4 @@
-﻿using creator.Models;
+﻿using Creator.Models;
 using Octokit;
 using OutputColorizer;
 using System;

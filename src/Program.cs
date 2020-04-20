@@ -1,6 +1,6 @@
-﻿using creator.Helpers;
-using creator.Models;
-using creator.Models.Objects;
+﻿using Creator.Helpers;
+using Creator.Models;
+using Creator.Models.Objects;
 using Octokit;
 using OutputColorizer;
 using System;
@@ -77,8 +77,8 @@ namespace Creator
                 foreach (RepositoryInfo repo in repoToCreateObjectIn)
                 {
                     // we can check labels and milestones.
-                    HashSet<creator.Models.Objects.Label> labelsInRepo = new HashSet<creator.Models.Objects.Label>(await s_gitHub.ListLabelsAsync(repo));
-                    HashSet<creator.Models.Objects.Milestone> milestonesInRepo = new HashSet<creator.Models.Objects.Milestone>(await s_gitHub.ListMilestonesAsync(repo));
+                    HashSet<Creator.Models.Objects.Label> labelsInRepo = new HashSet<Creator.Models.Objects.Label>(await s_gitHub.ListLabelsAsync(repo));
+                    HashSet<Creator.Models.Objects.Milestone> milestonesInRepo = new HashSet<Creator.Models.Objects.Milestone>(await s_gitHub.ListMilestonesAsync(repo));
 
                     List<GitHubObject> foundObjects = new List<GitHubObject>();
 
@@ -86,13 +86,13 @@ namespace Creator
                     {
                         switch (item)
                         {
-                            case creator.Models.Objects.Milestone milestone:
+                            case Creator.Models.Objects.Milestone milestone:
                                 if (milestonesInRepo.Contains(milestone))
                                 {
                                     foundObjects.Add(item);
                                 }
                                 break;
-                            case creator.Models.Objects.Label label:
+                            case Creator.Models.Objects.Label label:
                                 if (labelsInRepo.Contains(label))
                                 {
                                     foundObjects.Add(item);
@@ -149,10 +149,10 @@ namespace Creator
                     {
                         switch (item)
                         {
-                            case creator.Models.Objects.Milestone milestone:
+                            case Creator.Models.Objects.Milestone milestone:
                                 await s_gitHub.CreateMilestoneAsync(repo, milestone);
                                 break;
-                            case creator.Models.Objects.Label label:
+                            case Creator.Models.Objects.Label label:
                                 await s_gitHub.CreateLabelAsync(repo, label);
                                 break;
                             default:

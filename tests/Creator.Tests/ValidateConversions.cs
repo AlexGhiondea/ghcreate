@@ -1,4 +1,4 @@
-using creator.Models.Objects;
+using Creator.Models.Objects;
 using NUnit.Framework;
 using Octokit;
 using System;
@@ -14,7 +14,7 @@ namespace Creator.Tests
         [Category("Object conversion")]
         public void ConvertMilestone()
         {
-            creator.Models.Objects.Milestone m = new creator.Models.Objects.Milestone("Title", "Description", "1/2/2020");
+            Creator.Models.Objects.Milestone m = new Creator.Models.Objects.Milestone("Title", "Description", "1/2/2020");
             NewMilestone octokitMilestone = m.ConvertTo();
             Assert.AreEqual(m.Title, octokitMilestone.Title);
             Assert.AreEqual(m.Description, octokitMilestone.Description);
@@ -26,7 +26,7 @@ namespace Creator.Tests
         [Category("Object conversion")]
         public void ConvertLabel()
         {
-            creator.Models.Objects.Label l = new creator.Models.Objects.Label("Title", "Description", "ffeeff");
+            Creator.Models.Objects.Label l = new Creator.Models.Objects.Label("Title", "Description", "ffeeff");
             NewLabel octokitLabel = l.ConvertTo();
             Assert.AreEqual(l.Title, octokitLabel.Name);
             Assert.AreEqual(l.Description, octokitLabel.Description);

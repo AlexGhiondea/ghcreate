@@ -1,4 +1,4 @@
-using creator.Models.Objects;
+using Creator.Models.Objects;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
@@ -27,7 +27,7 @@ namespace Creator.Tests
 
             using StreamReader sr = new StreamReader(ms);
 
-            GitHubObject[] objects = creator.Models.Objects.GitHubObject.Parse(sr).ToArray();
+            GitHubObject[] objects = Creator.Models.Objects.GitHubObject.Parse(sr).ToArray();
 
             Assert.AreEqual(3, objects.Length);
 
@@ -55,7 +55,7 @@ namespace Creator.Tests
 
             using StreamReader sr = new StreamReader(ms);
 
-            GitHubObject[] objects = creator.Models.Objects.GitHubObject.Parse(sr).ToArray();
+            GitHubObject[] objects = Creator.Models.Objects.GitHubObject.Parse(sr).ToArray();
 
             Assert.AreEqual(3, objects.Length);
 
@@ -83,7 +83,7 @@ namespace Creator.Tests
 
             using StreamReader sr = new StreamReader(ms);
 
-            GitHubObject[] objects = creator.Models.Objects.GitHubObject.Parse(sr).ToArray();
+            GitHubObject[] objects = Creator.Models.Objects.GitHubObject.Parse(sr).ToArray();
 
             Assert.AreEqual(3, objects.Length);
 
@@ -111,7 +111,7 @@ namespace Creator.Tests
 
             using StreamReader sr = new StreamReader(ms);
 
-            GitHubObject[] objects = creator.Models.Objects.GitHubObject.Parse(sr).ToArray();
+            GitHubObject[] objects = Creator.Models.Objects.GitHubObject.Parse(sr).ToArray();
 
             Assert.AreEqual(3, objects.Length);
 
@@ -142,7 +142,7 @@ namespace Creator.Tests
 
             using StreamReader sr = new StreamReader(ms);
 
-            GitHubObject[] objects = creator.Models.Objects.GitHubObject.Parse(sr).ToArray();
+            GitHubObject[] objects = Creator.Models.Objects.GitHubObject.Parse(sr).ToArray();
 
             Assert.AreEqual(6, objects.Length);
 
