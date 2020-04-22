@@ -54,7 +54,9 @@ The format of the file is:
 
 ## Example of input file
 
-For example, here is a file that will ensure that the labels in GitHub repos follow the Azure-SDK guidelines
+For example, here is a file that will ensure that the labels in GitHub repos follow the Azure-SDK guidelines.
+
+As you can see, you can specify multiple types of objects in the same input file.
 
 ```
 Label,Client,Issues that are going to be addressed by a change in the data-plane client library,ffeb77
@@ -70,4 +72,5 @@ Label,bug,This issue requires a change to an existing behavior in the product in
 Label,feature-request,This issue requires a new behavior in the product in order to resolve.,eaa875
 Label,question,The issue doesn't require a change to the product in order to be resolved. Most issues start as that,eaa875
 Label,no-recent-activity,There has been no recent activity on this issue,bbbbbb
+Milestone,[2020] June,[2020] June,6/5/2020
 ```
