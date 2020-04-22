@@ -13,7 +13,7 @@ using System.Xml.Schema;
 
 namespace Creator
 {
-    class Program
+    class Programon
     {
         private static GitHubClient s_gitHub;
         private static CmdLineArgs s_cmdLine;
@@ -44,11 +44,15 @@ namespace Creator
 
             IEnumerable<GitHubObject> objects = GitHubObject.Parse(s_cmdLine.ObjectsFile);
 
-            if (s_cmdLine.Action == Action.Create)
+            if (s_cmdLine.Action == CommandAction.Create)
             {
                 await CreateObjectsInGitHubAsync();
             }
-            else if (s_cmdLine.Action == Action.List)
+            else if (s_cmdLine.Action == CommandAction.CreateOrUpdate)
+            {
+                await CreateOrUpdateObjectsInGitHubAsync();
+            }
+            else if (s_cmdLine.Action == CommandAction.List)
             {
                 List<RepositoryInfo> reposToList = RepositoryInfo.Parse(s_cmdLine.RepositoriesList).ToList();
 
@@ -68,7 +72,7 @@ namespace Creator
                     }
                 }
             }
-            else if (s_cmdLine.Action == Action.Check)
+            else if (s_cmdLine.Action == CommandAction.Check)
             {
                 // This checks that the objects in the list, they exist on those repos
                 List<GitHubObject> objectsToCheck = GitHubObject.Parse(s_cmdLine.ObjectsFile);
@@ -76,6 +80,8 @@ namespace Creator
 
                 foreach (RepositoryInfo repo in repoToCreateObjectIn)
                 {
+                    Colorizer.WriteLine("Processing [Magenta!{0}\\{1}] repo.", repo.Owner, repo.Name);
+
                     // we can check labels and milestones.
                     HashSet<Creator.Models.Objects.Label> labelsInRepo = new HashSet<Creator.Models.Objects.Label>(await s_gitHub.ListLabelsAsync(repo));
                     HashSet<Creator.Models.Objects.Milestone> milestonesInRepo = new HashSet<Creator.Models.Objects.Milestone>(await s_gitHub.ListMilestonesAsync(repo));
@@ -125,7 +131,8 @@ namespace Creator
             }
         }
 
-        private static async Task CreateObjectsInGitHubAsync()
+        private static async Task CreateObjectsAsync(Func<RepositoryInfo, Models.Objects.Milestone, Task> milestoneDelegate,
+            Func<RepositoryInfo, Models.Objects.Label, Task> labelsDelegate)
         {
             Colorizer.WriteLine("[Yellow!Warning]: About to create milestones on GitHub. Proceed? \\[[Red!Yes]/[Green!No]\\]");
             if (Console.ReadKey().Key != ConsoleKey.Y)
@@ -150,10 +157,10 @@ namespace Creator
                         switch (item)
                         {
                             case Creator.Models.Objects.Milestone milestone:
-                                await s_gitHub.CreateMilestoneAsync(repo, milestone);
+                                await milestoneDelegate(repo, milestone);
                                 break;
                             case Creator.Models.Objects.Label label:
-                                await s_gitHub.CreateLabelAsync(repo, label);
+                                await labelsDelegate(repo, label);
                                 break;
                             default:
                                 throw new InvalidOperationException($"Unknown type {item.GetType()}.");
@@ -161,7 +168,7 @@ namespace Creator
                     }
                     catch (Exception e) when (e is AggregateException)
                     {
-                        Colorizer.WriteLine("[Red!Error occured] Creating milestone failed.");
+                        Colorizer.WriteLine("[Red!Error occured] Creating object failed.");
                         var ag = e as AggregateException;
 
                         foreach (var exs in ag.InnerExceptions)
@@ -176,6 +183,18 @@ namespace Creator
                     }
                 }
             }
+        }
+
+        private static async Task CreateObjectsInGitHubAsync()
+        {
+            await CreateObjectsAsync(async (repo, milestone) => await s_gitHub.CreateMilestoneAsync(repo, milestone),
+                async (repo, label) => await s_gitHub.CreateLabelAsync(repo, label));
+        }
+
+        private static async Task CreateOrUpdateObjectsInGitHubAsync()
+        {
+            await CreateObjectsAsync(async (repo, milestone) => await s_gitHub.CreateOrUpdateMilestoneAsync(repo, milestone),
+                async (repo, label) => await s_gitHub.CreateOrUpdateLabelAsync(repo, label));
         }
     }
 }
