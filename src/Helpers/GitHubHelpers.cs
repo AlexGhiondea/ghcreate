@@ -53,5 +53,40 @@ namespace Creator.Helpers
             await ilc.Create(repository.Owner, repository.Name, label.ConvertTo());
             Colorizer.WriteLine("[Green!Success]");
         }
+
+        public static async Task CreateOrUpdateLabelAsync(this GitHubClient client, RepositoryInfo repository, Models.Objects.Label label)
+        {
+            IssuesLabelsClient ilc = new IssuesLabelsClient(new ApiConnection(client.Connection));
+            Colorizer.WriteLine("Creating or updating label [Cyan!{0}] in repo [Yellow!{1}]", $"Title: {label.Title}, Description: {label.Description}, Color: {label.Color}", repository);
+
+            try
+            {
+                Label existingLabel = await ilc.Get(repository.Owner, repository.Name, label.Title);
+
+                // try to update the label
+                Colorizer.WriteLine("Label found, updating");
+                LabelUpdate updateOperation = new LabelUpdate(label.Title, label.Color);
+                updateOperation.Description = label.Description;
+                await ilc.Update(repository.Owner, repository.Name, label.Title, updateOperation);
+                Colorizer.WriteLine("[Green!Success]");
+            }
+            catch (NotFoundException ex)
+            {
+                if (ex.StatusCode == System.Net.HttpStatusCode.NotFound)
+                {
+                    Colorizer.WriteLine("Label not found, creating");
+                    // try to create the label
+                    await CreateLabelAsync(client, repository, label);
+                    Colorizer.WriteLine("[Green!Success]");
+                }
+            }
+        }
+
+        public static async Task CreateOrUpdateMilestoneAsync(this GitHubClient client, RepositoryInfo repository, Models.Objects.Milestone milestone)
+        {
+            Colorizer.WriteLine("[Yellow!Warning] Updating milestones not supported. Will attempt to create.");
+
+            await CreateMilestoneAsync(client, repository, milestone);
+        }
     }
 }
