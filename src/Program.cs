@@ -64,7 +64,7 @@ namespace Creator
         {
             // This checks that the objects in the list, they exist on those repos
             List<GitHubObject> objectsToCheck = GitHubObject.Parse(s_cmdLine.ObjectsFile);
-            IEnumerable<RepositoryInfo> repoToCreateObjectIn = RepositoryInfo.Parse(s_cmdLine.RepositoriesList);
+            IEnumerable<RepositoryInfo> repoToCreateObjectIn = RepositoryInfo.Parse(s_cmdLine.Repositories);
 
             foreach (RepositoryInfo repo in repoToCreateObjectIn)
             {
@@ -120,7 +120,7 @@ namespace Creator
 
         private static async Task ListObjectsAsync()
         {
-            List<RepositoryInfo> reposToList = RepositoryInfo.Parse(s_cmdLine.RepositoriesList).ToList();
+            List<RepositoryInfo> reposToList = RepositoryInfo.Parse(s_cmdLine.Repositories).ToList();
 
             foreach (var repo in reposToList)
             {
@@ -158,7 +158,7 @@ namespace Creator
 
             // parse the data
             IEnumerable<GitHubObject> objectsToCreate = GitHubObject.Parse(s_cmdLine.ObjectsFile);
-            IEnumerable<RepositoryInfo> repoToCreateObjectIn = RepositoryInfo.Parse(s_cmdLine.RepositoriesList);
+            IEnumerable<RepositoryInfo> repoToCreateObjectIn = RepositoryInfo.Parse(s_cmdLine.Repositories);
 
             foreach (RepositoryInfo repo in repoToCreateObjectIn)
             {

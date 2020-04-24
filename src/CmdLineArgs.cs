@@ -29,9 +29,8 @@ namespace Creator
         [ArgumentGroup(nameof(CommandAction.List))]
         [ArgumentGroup(nameof(CommandAction.Create))]
         [ArgumentGroup(nameof(CommandAction.CreateOrUpdate))]
-        [RequiredArgument(1, "repos", "The list of repositories where to add the milestones to. The format is: owner\\repoName;owner\\repoName")]
-        public string Repositories { get; set; }
-        public List<string> RepositoriesList => Repositories.Split(';').ToList();
+        [RequiredArgument(1, "repos", "The list of repositories where to add the milestones to. The format is: owner\\repoName", true)]
+        public List<string> Repositories { get; set; }
     }
 }
 
