@@ -42,8 +42,6 @@ namespace Creator
 
             s_gitHub = GitHubHelpers.GetGitHubClientWithToken(s_cmdLine.Token);
 
-            IEnumerable<GitHubObject> objects = GitHubObject.Parse(s_cmdLine.ObjectsFile);
-
             if (s_cmdLine.Action == CommandAction.Create)
             {
                 await CreateObjectsInGitHubAsync();
@@ -54,79 +52,94 @@ namespace Creator
             }
             else if (s_cmdLine.Action == CommandAction.List)
             {
-                List<RepositoryInfo> reposToList = RepositoryInfo.Parse(s_cmdLine.RepositoriesList).ToList();
-
-                foreach (var repo in reposToList)
-                {
-                    Colorizer.WriteLine("Processing [Magenta!{0}\\{1}] repo.", repo.Owner, repo.Name);
-
-                    foreach (var milestone in s_gitHub.ListMilestonesAsync(repo).Result)
-                    {
-                        Colorizer.Write("Title: [Yellow!{0}]", milestone.Title);
-                        if (!string.IsNullOrEmpty(milestone.Description))
-                            Colorizer.Write(", Description: [Yellow!{0}]", milestone.Description);
-                        if (milestone.DueOn.HasValue)
-                            Colorizer.Write(", DueOn: [Yellow!{0}]", milestone.DueOn.Value.Date.ToShortDateString());
-
-                        Colorizer.WriteLine($", Open issues: [Cyan!{milestone.OpenIssues}],  Closed issues: [Green!{milestone.ClosedIssues}]  ");
-                    }
-                }
+                await ListObjectsAsync();
             }
             else if (s_cmdLine.Action == CommandAction.Check)
             {
-                // This checks that the objects in the list, they exist on those repos
-                List<GitHubObject> objectsToCheck = GitHubObject.Parse(s_cmdLine.ObjectsFile);
-                IEnumerable<RepositoryInfo> repoToCreateObjectIn = RepositoryInfo.Parse(s_cmdLine.RepositoriesList);
+                await CheckObjectsAsync();
+            }
+        }
 
-                foreach (RepositoryInfo repo in repoToCreateObjectIn)
+        private static async Task CheckObjectsAsync()
+        {
+            // This checks that the objects in the list, they exist on those repos
+            List<GitHubObject> objectsToCheck = GitHubObject.Parse(s_cmdLine.ObjectsFile);
+            IEnumerable<RepositoryInfo> repoToCreateObjectIn = RepositoryInfo.Parse(s_cmdLine.RepositoriesList);
+
+            foreach (RepositoryInfo repo in repoToCreateObjectIn)
+            {
+                Colorizer.WriteLine("Processing [Magenta!{0}\\{1}] repo.", repo.Owner, repo.Name);
+
+                // we can check labels and milestones.
+                HashSet<Creator.Models.Objects.Label> labelsInRepo = new HashSet<Creator.Models.Objects.Label>(await s_gitHub.ListLabelsAsync(repo));
+                HashSet<Creator.Models.Objects.Milestone> milestonesInRepo = new HashSet<Creator.Models.Objects.Milestone>(await s_gitHub.ListMilestonesAsync(repo));
+
+                List<GitHubObject> foundObjects = new List<GitHubObject>();
+
+                foreach (GitHubObject item in objectsToCheck)
                 {
-                    Colorizer.WriteLine("Processing [Magenta!{0}\\{1}] repo.", repo.Owner, repo.Name);
-
-                    // we can check labels and milestones.
-                    HashSet<Creator.Models.Objects.Label> labelsInRepo = new HashSet<Creator.Models.Objects.Label>(await s_gitHub.ListLabelsAsync(repo));
-                    HashSet<Creator.Models.Objects.Milestone> milestonesInRepo = new HashSet<Creator.Models.Objects.Milestone>(await s_gitHub.ListMilestonesAsync(repo));
-
-                    List<GitHubObject> foundObjects = new List<GitHubObject>();
-
-                    foreach (GitHubObject item in objectsToCheck)
+                    switch (item)
                     {
-                        switch (item)
-                        {
-                            case Creator.Models.Objects.Milestone milestone:
-                                if (milestonesInRepo.Contains(milestone))
-                                {
-                                    foundObjects.Add(item);
-                                }
-                                break;
-                            case Creator.Models.Objects.Label label:
-                                if (labelsInRepo.Contains(label))
-                                {
-                                    foundObjects.Add(item);
-                                }
-                                break;
-                            default:
-                                throw new InvalidOperationException($"Unknown type {item.GetType()}.");
-                        }
+                        case Creator.Models.Objects.Milestone milestone:
+                            if (milestonesInRepo.Contains(milestone))
+                            {
+                                foundObjects.Add(item);
+                            }
+                            break;
+                        case Creator.Models.Objects.Label label:
+                            if (labelsInRepo.Contains(label))
+                            {
+                                foundObjects.Add(item);
+                            }
+                            break;
+                        default:
+                            throw new InvalidOperationException($"Unknown type {item.GetType()}.");
                     }
+                }
 
-                    // remove all the found objets from the initial list.
-                    foreach (GitHubObject item in foundObjects)
-                    {
-                        objectsToCheck.Remove(item);
-                    }
+                // remove all the found objets from the initial list.
+                foreach (GitHubObject item in foundObjects)
+                {
+                    objectsToCheck.Remove(item);
+                }
 
-                    if (objectsToCheck.Count == 0)
+                if (objectsToCheck.Count == 0)
+                {
+                    Colorizer.WriteLine("[Green!Done]: All requested objects are present");
+                }
+                else
+                {
+                    Colorizer.WriteLine("[Red!Done]: The following were not found:");
+                    foreach (var item in objectsToCheck)
                     {
-                        Colorizer.WriteLine("[Green!Done]: All requested objects are present");
+                        Console.WriteLine(item.ToString());
                     }
-                    else
-                    {
-                        Colorizer.WriteLine("[Red!Done]: The following were not found:");
-                        foreach (var item in objectsToCheck)
-                        {
-                            Console.WriteLine(item.ToString());
-                        }
-                    }
+                }
+            }
+        }
+
+        private static async Task ListObjectsAsync()
+        {
+            List<RepositoryInfo> reposToList = RepositoryInfo.Parse(s_cmdLine.RepositoriesList).ToList();
+
+            foreach (var repo in reposToList)
+            {
+                Colorizer.WriteLine("Processing [Magenta!{0}\\{1}] repo.", repo.Owner, repo.Name);
+
+                List<GitHubObject> objects = new List<GitHubObject>();
+                if (s_cmdLine.ObjectType.HasFlag(GitHubObjectType.Milestone))
+                {
+                    objects.AddRange(await s_gitHub.ListMilestonesAsync(repo));
+                }
+                if(s_cmdLine.ObjectType.HasFlag(GitHubObjectType.Label))
+                {
+                    objects.AddRange(await s_gitHub.ListLabelsAsync(repo));
+                }
+
+                foreach (var obj in objects)
+                {
+                    // This is written this way to work around issue #22 in the OutputColorizer
+                    Colorizer.WriteLine("{0}",obj.ToString());
                 }
             }
         }

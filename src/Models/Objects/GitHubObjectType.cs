@@ -4,9 +4,10 @@ using System.Text;
 
 namespace Creator.Models.Objects
 {
+    [Flags]
     enum GitHubObjectType
     {
-        Milestone,
-        Label
+        Milestone = 1,
+        Label = 2
     }
 }

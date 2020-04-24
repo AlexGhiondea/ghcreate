@@ -1,5 +1,6 @@
 ﻿using CommandLine.Attributes;
 using CommandLine.Attributes.Advanced;
+using Creator.Models.Objects;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -14,6 +15,10 @@ namespace Creator
         [OptionalArgument(null, "token", "The GitHub authentication token.")]
         public string Token { get; set; }
 
+        [RequiredArgument(0,"type", "The type of object we want to list")]
+        [ArgumentGroup(nameof(CommandAction.List))]
+        public GitHubObjectType ObjectType { get; set; }
+
         [ArgumentGroup(nameof(CommandAction.Check))]
         [ArgumentGroup(nameof(CommandAction.Create))]
         [ArgumentGroup(nameof(CommandAction.CreateOrUpdate))]
@@ -21,7 +26,7 @@ namespace Creator
         public string ObjectsFile { get; set; }
 
         [ArgumentGroup(nameof(CommandAction.Check))]
-        [ArgumentGroup(nameof(CommandAction.List), overrideRequiredPosition: 0)]
+        [ArgumentGroup(nameof(CommandAction.List))]
         [ArgumentGroup(nameof(CommandAction.Create))]
         [ArgumentGroup(nameof(CommandAction.CreateOrUpdate))]
         [RequiredArgument(1, "repos", "The list of repositories where to add the milestones to. The format is: owner\\repoName;owner\\repoName")]
