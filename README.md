@@ -24,22 +24,22 @@ If you want to know more about a particular command, you can do that too!
 ```
 Usage:
  GHCreator.exe Create objectsFile repos [-token value]
-  - objectsFile : The file containing the list of objects to create or check. The structure is: <type>,<name>,<description>,[any other type specific information] (string, required)
-  - repos       : The list of repositories where to add the milestones to. The format is: owner\repoName;owner\repoName (string, required)
+  - objectsFile : The file containing the list of objects to create. The structure is: <type>,<name>,<description>,[any other type specific information] (string, required)
+  - repos       : The list of repositories to create objects in. The format is: owner\repoName;owner\repoName (string, required)
   - token       : The GitHub authentication token. (string, default=)
 
  GHCreator.exe CreateOrUpdate objectsFile repos [-token value]
-  - objectsFile : The file containing the list of objects to create or check. The structure is: <type>,<name>,<description>,[any other type specific information] (string, required)
-  - repos       : The list of repositories where to add the milestones to. The format is: owner\repoName;owner\repoName (string, required)
+  - objectsFile : The file containing the list of objects to be created or updated. The structure is: <type>,<name>,<description>,[any other type specific information] (string, required)
+  - repos       : The list of repositories to create or update objects in. The format is: owner\repoName;owner\repoName (string, required)
   - token       : The GitHub authentication token. (string, default=)
 
  GHCreator.exe List repos [-token value]
-  - repos : The list of repositories where to add the milestones to. The format is: owner\repoName;owner\repoName (string, required)
+  - repos : The list of repositories you want to get a listing of objects from. The format is: owner\repoName;owner\repoName (string, required)
   - token : The GitHub authentication token. (string, default=)
 
  GHCreator.exe Check objectsFile repos [-token value]
-  - objectsFile : The file containing the list of objects to create or check. The structure is: <type>,<name>,<description>,[any other type specific information] (string, required)
-  - repos       : The list of repositories where to add the milestones to. The format is: owner\repoName;owner\repoName (string, required)
+  - objectsFile : The file containing the list of objects to check. The structure is: <type>,<name>,<description>,[any other type specific information] (string, required)
+  - repos       : The list of repositories to apply the objectsFile to check against. The format is: owner\repoName;owner\repoName (string, required)
   - token       : The GitHub authentication token. (string, default=)
 ```
 
@@ -59,18 +59,18 @@ For example, here is a file that will ensure that the labels in GitHub repos fol
 As you can see, you can specify multiple types of objects in the same input file.
 
 ```
-Label,Client,Issues that are going to be addressed by a change in the data-plane client library,ffeb77
-Label,Mgmt,Issues that are going to be addressed by a change in the management client library,ffeb77
-Label,EngSys,Engineering System,ffeb77
-Label,Service,The fix for the issue needs to go in the service,ffeb77
-Label,Service Attention,The issue requires the service team to investigate further.,10066b
-Label,needs-attention,Issue that needs attention from the SDK team,3BA0F8
-Label,needs-triage,This is a new issue that needs to be triaged to the appropriate team,ededed
-Label,needs-team-triage,Issue that needs the team to triage the issue.,ededed
-Label,needs-author-feedback,Issue needs more information for the SDK team to take action on it,f72598
-Label,bug,This issue requires a change to an existing behavior in the product in order to resolve.,eaa875
-Label,feature-request,This issue requires a new behavior in the product in order to resolve.,eaa875
-Label,question,The issue doesn't require a change to the product in order to be resolved. Most issues start as that,eaa875
-Label,no-recent-activity,There has been no recent activity on this issue,bbbbbb
+Label,Client,This issue points to a problem in the data-plane of the library.,ffeb77
+Label,Mgmt,This issue points to a problem in the management-plane of the library.,ffeb77
+Label,EngSys,This issue is responsible by the Engineering System team.,ffeb77
+Label,Service,This issue points to a problem in the service.,ffeb77
+Label,Service Attention,This issue requires the service team to investigate further and is responsible by the service team.,10066b
+Label,needs-attention,This issue needs attention from the service team or the SDK team.,3BA0F8
+Label,needs-triage,This is a new issue that needs to be triaged to the appropriate team.,ededed
+Label,needs-team-triage,This issue needs the team to triage.,ededed
+Label,needs-author-feedback,More information is needed from author to address the issue.,f72598
+Label,bug,This issue requires a change to an existing behavior in the product in order to be resolved.,eaa875
+Label,feature-request,This issue requires a new behavior in the product in order be resolved.,eaa875
+Label,question,This issue doesn't require a change to the product in order to be resolved. Most issues start as this.,eaa875
+Label,no-recent-activity,There has been no recent activity on this issue.,bbbbbb
 Milestone,[2020] June,[2020] June,6/5/2020
 ```
