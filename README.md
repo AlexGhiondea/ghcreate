@@ -15,7 +15,7 @@ To get started, you can look at the short help for the tool:
 Usage:
  GHCreator.exe  Create objectsFile repos [-token value]
  GHCreator.exe  CreateOrUpdate objectsFile repos [-token value]
- GHCreator.exe  List repos [-token value]
+ GHCreator.exe  List type repos [-token value]
  GHCreator.exe  Check objectsFile repos [-token value]
 ```
 
@@ -24,22 +24,23 @@ If you want to know more about a particular command, you can do that too!
 ```
 Usage:
  GHCreator.exe Create objectsFile repos [-token value]
-  - objectsFile : The file containing the list of objects to create. The structure is: <type>,<name>,<description>,[any other type specific information] (string, required)
-  - repos       : The list of repositories to create objects in. The format is: owner\repoName;owner\repoName (string, required)
+  - objectsFile : The file containing the list of objects to create or check. The structure is: <type>,<name>,<description>,[any other type specific information] (string, required)
+  - repos       : The list of repositories where to add the milestones to. The format is: owner\repoName (list, required)
   - token       : The GitHub authentication token. (string, default=)
 
  GHCreator.exe CreateOrUpdate objectsFile repos [-token value]
-  - objectsFile : The file containing the list of objects to be created or updated. The structure is: <type>,<name>,<description>,[any other type specific information] (string, required)
-  - repos       : The list of repositories to create or update objects in. The format is: owner\repoName;owner\repoName (string, required)
+  - objectsFile : The file containing the list of objects to create or check. The structure is: <type>,<name>,<description>,[any other type specific information] (string, required)
+  - repos       : The list of repositories where to add the milestones to. The format is: owner\repoName (list, required)
   - token       : The GitHub authentication token. (string, default=)
 
- GHCreator.exe List repos [-token value]
-  - repos : The list of repositories you want to get a listing of objects from. The format is: owner\repoName;owner\repoName (string, required)
+ GHCreator.exe List type repos [-token value]
+  - type  : The type of object we want to list (one of Milestone,Label, required)
+  - repos : The list of repositories where to add the milestones to. The format is: owner\repoName (list, required)
   - token : The GitHub authentication token. (string, default=)
 
  GHCreator.exe Check objectsFile repos [-token value]
-  - objectsFile : The file containing the list of objects to check. The structure is: <type>,<name>,<description>,[any other type specific information] (string, required)
-  - repos       : The list of repositories to apply the objectsFile to check against. The format is: owner\repoName;owner\repoName (string, required)
+  - objectsFile : The file containing the list of objects to create or check. The structure is: <type>,<name>,<description>,[any other type specific information] (string, required)
+  - repos       : The list of repositories where to add the milestones to. The format is: owner\repoName (list, required)
   - token       : The GitHub authentication token. (string, default=)
 ```
 
