@@ -37,7 +37,13 @@ namespace Creator.Models.Objects
             };
 
             if (string.IsNullOrEmpty(DueOn?.ToString()))
+            {
                 milestone.DueOn = null;
+            }
+            else
+            {
+                milestone.DueOn = DueOn;
+            }
             return milestone;
         }
 
