@@ -50,7 +50,7 @@ namespace Creator.Models.Objects
 
         public override string ToString()
         {
-            return $"Label: {Title} ({Description}). Color: {Color}";
+            return $"Label,{Title},{Description},{Color}";
         }
     }
 }
