@@ -66,7 +66,7 @@ namespace Creator.Models.Objects
 
         public override string ToString()
         {
-            return $"Milestone: {Title} ({Description}). DueOn: {DueOn}";
+            return $"Milestone,{Title},{Description},{DueOn}";
         }
     }
 }
