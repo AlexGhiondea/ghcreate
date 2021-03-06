@@ -1,4 +1,5 @@
-﻿using Octokit;
+﻿using Creator.Helpers;
+using Octokit;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
@@ -50,7 +51,8 @@ namespace Creator.Models.Objects
 
         public override string ToString()
         {
-            return $"Label,{Title},{Description},{Color}";
+            
+            return $"Label,{base.ToString()},{Color}";
         }
     }
 }

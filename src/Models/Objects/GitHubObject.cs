@@ -1,6 +1,10 @@
-﻿using OutputColorizer;
+﻿using Creator.Helpers;
+using CsvHelper;
+using CsvHelper.Configuration;
+using OutputColorizer;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net.Http.Headers;
@@ -23,25 +27,17 @@ namespace Creator.Models.Objects
 
         public static IEnumerable<GitHubObject> Parse(StreamReader stream)
         {
-            string line; int lineCount = 0;
-
-            while ((line = stream.ReadLine()) != null)
+            using CsvReader csv = new CsvReader(stream, new CsvConfiguration(CultureInfo.InvariantCulture));
+            while (csv.Read())
             {
-                lineCount++;
-                // Parse the type, title and description
-                string[] entries = line.Split(',', StringSplitOptions.None); // we want empty entries
+                // the first field is the type of the object
+                GitHubObjectType type = Enum.Parse<GitHubObjectType>(csv.GetField(0));
 
-                if (entries.Length < 3)
-                {
-                    Colorizer.WriteLine("[Yellow!Warning] Line {0} too short!", lineCount);
-                }
-
-                // the type of the object
-                GitHubObjectType type = Enum.Parse<GitHubObjectType>(entries[0]);
-
-                yield return CreateObject(type, entries.Skip(1).ToArray());
+                // the remaining field are properties of that object
+                yield return CreateObject(type, csv.Context.Parser.Record.Skip(1).ToArray());
             }
         }
+
         public static List<GitHubObject> Parse(string filePath)
         {
             using StreamReader sr = new StreamReader(filePath);
@@ -59,6 +55,11 @@ namespace Creator.Models.Objects
                 default:
                     throw new InvalidOperationException($"Type {type} is not supported.");
             }
+        }
+
+        public override string ToString()
+        {
+            return $"{StringHelpers.EncodeString(Title)},{StringHelpers.EncodeString(Description)}";
         }
     }
 }

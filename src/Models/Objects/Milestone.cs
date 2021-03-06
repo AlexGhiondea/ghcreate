@@ -1,4 +1,5 @@
-﻿using Octokit;
+﻿using Creator.Helpers;
+using Octokit;
 using OutputColorizer;
 using System;
 using System.Collections.Generic;
@@ -66,7 +67,7 @@ namespace Creator.Models.Objects
 
         public override string ToString()
         {
-            return $"Milestone,{Title},{Description},{DueOn}";
+            return $"Milestone,{base.ToString()},{DueOn}";
         }
     }
 }
