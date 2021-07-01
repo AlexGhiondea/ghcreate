@@ -58,6 +58,7 @@ namespace Creator.Helpers
                 // make sure the rate limit is met
                 await rateLimiter;
                 searchresults = await s_gitHub.Search.SearchIssues(issueQuery);
+                Colorizer.WriteLine("Found [Yellow!{0}] issues in [Magenta!{1}].", searchresults.TotalCount, $"{repo.Owner}\\{repo.Name}");
 
                 foreach (Issue item in searchresults.Items)
                 {
@@ -75,6 +76,7 @@ namespace Creator.Helpers
                 {
                     totalPages = (searchresults.TotalCount / 100) + 1;
                 }
+                Colorizer.WriteLine("Retrieved [Yellow!{0}]/[Yellow!{1}] issues.", issuesFound.Count, searchresults.TotalCount);
             } while (totalPages > currentPage);
 
             return issuesFound;
