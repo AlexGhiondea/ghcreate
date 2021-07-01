@@ -6,6 +6,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using RateLimiter;
+using ComposableAsync;
 
 namespace Creator.Helpers
 {
@@ -34,6 +36,48 @@ namespace Creator.Helpers
             var labelsFromOctokit = await ilc.GetAllForRepository(repo.Owner, repo.Name);
 
             return labelsFromOctokit.Select(l => new Models.Objects.Label(l));
+        }
+
+        public static async Task<IEnumerable<Models.Objects.Issue>> ListIssuesAsync(this GitHubClient s_gitHub, RepositoryInfo repo, SearchIssuesRequest issueQuery)
+        {
+            TimeLimiter rateLimiter = TimeLimiter.GetFromMaxCountByInterval(1, TimeSpan.FromSeconds(1));
+
+            List<Models.Objects.Issue> issuesFound = new List<Models.Objects.Issue>();
+
+            int totalPages = -1, currentPage = 0;
+
+            issueQuery.Repos.Add(repo.Owner, repo.Name);
+
+            do
+            {
+                currentPage++;
+                issueQuery.Page = currentPage;
+
+                SearchIssuesResult searchresults = null;
+
+                // make sure the rate limit is met
+                await rateLimiter;
+                searchresults = await s_gitHub.Search.SearchIssues(issueQuery);
+
+                foreach (Issue item in searchresults.Items)
+                {
+                    Models.Objects.Issue issueFound = new Models.Objects.Issue(item)
+                    {
+                        // set the repo on the item
+                        RepositoryName = repo.Name,
+                        OrganizationName = repo.Owner
+                    };
+                    issuesFound.Add(issueFound);
+                }
+
+                // if this is the first call, setup the totalpages stuff
+                if (totalPages == -1)
+                {
+                    totalPages = (searchresults.TotalCount / 100) + 1;
+                }
+            } while (totalPages > currentPage);
+
+            return issuesFound;
         }
 
         public static async Task CreateMilestoneAsync(this GitHubClient client, RepositoryInfo repository, Models.Objects.Milestone milestone)
@@ -88,5 +132,43 @@ namespace Creator.Helpers
 
             await CreateMilestoneAsync(client, repository, milestone);
         }
+
+
+        //private static IEnumerable<Issue> SearchForGitHubIssues(this GitHubClient s_gitHub, SearchIssuesRequest issueQuery)
+        //{
+        //    List<Issue> totalIssues = new List<Issue>();
+        //    int totalPages = -1, currentPage = 0;
+
+        //    do
+        //    {
+        //        currentPage++;
+        //        issueQuery.Page = currentPage;
+
+        //        SearchIssuesResult searchresults = null;
+
+        //        WaitForGitHubCapacity();
+        //        searchresults = s_gitHub.Search.SearchIssues(issueQuery).Result;
+
+        //        foreach (Issue item in searchresults.Items)
+        //        {
+        //            totalIssues.Add(item);
+        //        }
+
+        //        // if this is the first call, setup the totalpages stuff
+        //        if (totalPages == -1)
+        //        {
+        //            totalPages = (searchresults.TotalCount / 100) + 1;
+        //        }
+        //    } while (totalPages > currentPage);
+
+        //    return totalIssues;
+        //}
+
+        //private static TimeLimiter rateLimiter = TimeLimiter.GetFromMaxCountByInterval(1, TimeSpan.FromSeconds(1));
+
+        //private static void WaitForGitHubCapacity()
+        //{
+        //    rateLimiter.GetAwaiter().GetResult();
+        //}
     }
 }

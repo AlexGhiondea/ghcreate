@@ -56,6 +56,8 @@ namespace Creator.Models.Objects
                     return new Milestone(entries);
                 case GitHubObjectType.Label:
                     return new Label(entries);
+                case GitHubObjectType.Issue:
+                    throw new InvalidOperationException("Creating issues is not yet supported");
                 default:
                     throw new InvalidOperationException($"Type {type} is not supported.");
             }
