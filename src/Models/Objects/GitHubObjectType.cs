@@ -8,6 +8,7 @@ namespace Creator.Models.Objects
     enum GitHubObjectType
     {
         Milestone = 1,
-        Label = 2
+        Label = 2,
+        Issue = 4
     }
 }

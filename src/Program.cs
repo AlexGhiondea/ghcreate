@@ -131,15 +131,28 @@ namespace Creator
                 {
                     objects.AddRange(await s_gitHub.ListMilestonesAsync(repo));
                 }
-                if(s_cmdLine.ObjectType.HasFlag(GitHubObjectType.Label))
+                if (s_cmdLine.ObjectType.HasFlag(GitHubObjectType.Label))
                 {
                     objects.AddRange(await s_gitHub.ListLabelsAsync(repo));
+                }
+                if (s_cmdLine.ObjectType.HasFlag(GitHubObjectType.Issue))
+                {
+                    SearchIssuesRequest searchIssue = new SearchIssuesRequest()
+                    {
+                        State = ItemState.Open //Only list open issues
+                    };
+
+                    if (!string.IsNullOrEmpty(s_cmdLine.Label))
+                    {
+                        searchIssue.Labels = new List<string>() { s_cmdLine.Label };
+                    }
+                    objects.AddRange(await s_gitHub.ListIssuesAsync(repo, searchIssue));
                 }
 
                 foreach (var obj in objects)
                 {
                     // This is written this way to work around issue #22 in the OutputColorizer
-                    Colorizer.WriteLine("{0}",obj.ToString());
+                    Colorizer.WriteLine("{0}", obj.ToString());
                 }
             }
         }

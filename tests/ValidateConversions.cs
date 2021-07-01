@@ -32,5 +32,12 @@ namespace Creator.Tests
             Assert.AreEqual(l.Description, octokitLabel.Description);
             Assert.AreEqual(l.Color, octokitLabel.Color);
         }
+
+        [Test]
+        [Category("Object conversion")]
+        public void ConvertIssue()
+        {
+            Assert.Throws<NotImplementedException>(() => new Creator.Models.Objects.Issue("Title", "URL", "AssignedTo", "Milestone", "Org", "RepoName").ConvertTo());
+        }
     }
 }
