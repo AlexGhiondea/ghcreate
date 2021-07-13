@@ -2,13 +2,21 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFrameworks>netcoreapp3.1;net6.0</TargetFrameworks>
     <AssemblyName>GHCreator</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="CommandLine.Net" Version="2.2.2" />
     <PackageReference Include="CsvHelper" Version="26.0.1" />
+    <PackageReference Include="DotNet.ReproducibleBuilds" Version="0.1.64">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="DotNet.ReproducibleBuilds.Isolated" Version="0.1.64">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
     <PackageReference Include="Octokit" Version="0.47.0" />
     <PackageReference Include="RateLimiter" Version="2.2.0" />
   </ItemGroup>
