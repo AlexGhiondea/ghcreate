@@ -19,7 +19,7 @@ namespace Creator
         [ArgumentGroup(nameof(CommandAction.List))]
         public GitHubObjectType ObjectType { get; set; }
 
-        [OptionalArgument(0, "label", "Specific label that you want to filter issues by. If not specified, all issues are returned")]
+        [OptionalArgument("", "label", "Specific label that you want to filter issues by. If not specified, all issues are returned")]
         [ArgumentGroup(nameof(CommandAction.List))]
         public string Label { get; set; }
 
