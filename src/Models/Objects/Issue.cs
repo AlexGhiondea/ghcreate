@@ -3,6 +3,7 @@ using Octokit;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using System.Text;
 
 namespace Creator.Models.Objects
@@ -11,14 +12,17 @@ namespace Creator.Models.Objects
     {
         public string AssignedTo { get; set; }
         public string Milestone { get; set; }
-        
+
         public string RepositoryName { get; set; }
         public string OrganizationName { get; set; }
+
+        public string Labels { get; set; }
 
         public Issue(Octokit.Issue issue) : base(issue.Title, issue.HtmlUrl)
         {
             AssignedTo = issue.Assignee?.Login;
             Milestone = issue.Milestone?.Title;
+            Labels = string.Join(",", issue.Labels.OrderBy(x => x.Name).Select(x => x.Name));
         }
 
         public Issue(params string[] entries) : base(entries)
@@ -57,7 +61,7 @@ namespace Creator.Models.Objects
 
         public override string ToString()
         {
-            return $"Issue,{base.ToString()},{AssignedTo},{Milestone},{RepositoryName},{OrganizationName}";
+            return $"Issue,{base.ToString()},{AssignedTo},{Milestone},{RepositoryName},{OrganizationName},{Labels}";
         }
 
         public NewIssue ConvertTo()
